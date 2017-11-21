@@ -5,12 +5,14 @@ Programa cliente que abre un socket a un servidor
 """
 
 import socket
+import sys
 
 # Cliente UDP simple.
 
 # Dirección IP del servidor.
-SERVER = 'localhost'
-PORT = 6001
+METODO = sys.argv[2]
+SERVER = sys.argv[3]split(':')[0]
+PORT = sys.argv[3].split(':')[-1]
 
 # Contenido que vamos a enviar
 LINE = '¡Hola mundo!'
@@ -19,11 +21,19 @@ LINE = '¡Hola mundo!'
 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
     my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     my_socket.connect((SERVER, PORT))
+    if METODO == INVITE:
+        print("Enviando: " + METODO + ' sip:' + SERVER + ' SIP/2.0')
+        my_socket.send(bytes(METODO, 'utf-8') + b'\r\n')
+        data = my_socket.recv(1024)
+        if data.decode('utf8') == ('SIP/2.0 100 Trying\r\n\r\n'
+                                   'Sip/2.0 180 Ringing\r\n\r\n'
+                                   'SIP/2.0 200 OK\r\n\r\n')
+            my_socket.send(bytes("ACK" + 'sip' + SERVER + 'SIP/2.0' ))
 
-    print("Enviando: " + LINE)
-    my_socket.send(bytes(LINE, 'utf-8') + b'\r\n')
-    data = my_socket.recv(1024)
-
+    elif METODO == BYE:
+        print("Enviando: " + METODO + ' sip:' + SERVER + ' SIP/2.0')
+        my_socket.send(bytes(METODO, 'utf-8') + b'\r\n')
+        data = my_socket.recv(1024)
     print('Recibido -- ', data.decode('utf-8'))
     print("Terminando socket...")
 
