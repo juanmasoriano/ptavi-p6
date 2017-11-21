@@ -5,7 +5,8 @@ Clase (y programa principal) para un servidor de eco en UDP simple
 """
 
 import socketserver
-
+import sys
+import os
 
 class EchoHandler(socketserver.DatagramRequestHandler):
     """
@@ -27,8 +28,8 @@ class EchoHandler(socketserver.DatagramRequestHandler):
                                   'SIP/2.0 200 OK\r\n\r\n )
             elif line.decode('utf-8') == "BYE":
                 self.wfile.write(b'SIP/2.0 200 OK\r\n\r\n')
-            #elif line.decode('utf-8') == "ACK":
-                
+            elif line.decode('utf-8') == "ACK":
+                os.system('./mp32rtp -i 127.0.01 -p 23032 <' + fichero_audio)
             elif line.decode('utf8') not in Metodos_sip:
                 self.wfile.write(b'SIP/2.0 405 Method Not Allowed\r\n\r\n')
             else:
