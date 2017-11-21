@@ -41,6 +41,15 @@ class EchoHandler(socketserver.DatagramRequestHandler):
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
-    serv = socketserver.UDPServer((sys.argv[1], int(sys.argv[2])), EchoHandler)
-    print("Listening...")
-    serv.serve_forever()
+    try:
+        serv = socketserver.UDPServer((sys.argv[1], int(sys.argv[2])),EchoHandler)
+        print("Listening...")
+        if not os.path.isfile(fichero_audio):
+            sys.exit('File error: ' + fichero_audio + ' does not exist')
+        print('Listening...')
+    except IndexError:
+        sys.exit('Usage: python3 server.py IP port audio_file')
+    try:
+        serv.serve_forever()
+    except KeyboardInterrupt:
+        print('Fin')
