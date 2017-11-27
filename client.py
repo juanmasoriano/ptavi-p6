@@ -26,18 +26,18 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
         LINEA = (METODO + ' sip:' + sys.argv[2].split(':')[0] + ' SIP/2.0')
         my_socket.send(bytes(LINEA, 'utf-8') + b'\r\n')
         data = my_socket.recv(1024)
+        print('Recibido..\r\n\r\n', data.decode('utf-8'))
+        
         if data.decode('utf8') == ('SIP/2.0 100 Trying\r\n\r\n'
                                    'Sip/2.0 180 Ringing\r\n\r\n'
                                    'SIP/2.0 200 OK\r\n\r\n'):
             LINEA = ('ACK' + ' sip:' + sys.argv[2].split(':')[0] + ' SIP/2.0')
             my_socket.send(bytes(LINEA, 'utf-8' ) + b'\r\n')
-
     elif METODO == 'BYE':
-
-        my_socket.send(bytes(METODO, 'utf-8') + b'\r\n')
+        LINEA = (METODO + ' sip:' + sys.argv[2].split(':')[0] + ' SIP/2.0')
+        my_socket.send(bytes(LINEA, 'utf-8') + b'\r\n')
         data = my_socket.recv(1024)
-    print('Recibido..\r\n\r\n', data.decode('utf-8'))
-    print("Terminando socket...")
+        print('Recibido..\r\n\r\n', data.decode('utf-8'))
 
 print("Fin.")
 
