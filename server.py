@@ -1,17 +1,12 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-"""
-Clase (y programa principal) para un servidor de eco en UDP simple
-"""
 
 import socketserver
 import sys
 import os
 
 class EchoHandler(socketserver.DatagramRequestHandler):
-    """
-    Echo server class
-    """
+
 
     def handle(self):
         # Escribe dirección y puerto del cliente (de tupla client_address)
@@ -30,19 +25,21 @@ class EchoHandler(socketserver.DatagramRequestHandler):
         elif line_string[0] == "BYE":
             self.wfile.write(b'SIP/2.0 200 OK\r\n\r\n')
         elif line_string[0] == "ACK":
-            os.system('./mp32rtp -i 127.0.01 -p 23032 <' + fichero_audio)
+            aEjecutar = './mp32rtp -i 127.0.0.1 -p 23032 <' + fichero_audio
+            os.system(aEjecutar)
         elif line_string[0]!= 'INVITE':
+            self.wfile.write(b'SIP/2.0 405 Method Not Allowed\r\n\r\n')
+        elif line_string[0]!= 'BYE':
+            self.wfile.write(b'SIP/2.0 405 Method Not Allowed\r\n\r\n')
+        elif line_string[0]!= 'ACK':
             self.wfile.write(b'SIP/2.0 405 Method Not Allowed\r\n\r\n')
         else:
             self.wfile.write(b'SIP/2.0 400 Bad Request\r\n\r\n')
 
-            # Si no hay más líneas salimos del bucle infinito
 
 if __name__ == "__main__":
-    # Creamos servidor de eco y escuchamos
     try:
         serv = socketserver.UDPServer((sys.argv[1], int(sys.argv[2])),EchoHandler)
-
         fichero_audio = sys.argv[3]
         print("Listening...\r\n")
         if not os.path.isfile(fichero_audio):
