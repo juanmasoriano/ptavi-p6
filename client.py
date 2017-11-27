@@ -6,8 +6,8 @@ Programa cliente que abre un socket a un servidor
 
 import socket
 import sys
+
 try:
-# Dirección IP del servidor y método.
     METODO = sys.argv[1]
     SERVER = sys.argv[2].split('@')[-1].split(':')[0]
     PORT = int(sys.argv[2].split(':')[-1])

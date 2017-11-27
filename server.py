@@ -12,7 +12,6 @@ class EchoHandler(socketserver.DatagramRequestHandler):
 
         Metodos_sip = ['INVITE','BYE','ACK']
         line = self.rfile.read().decode('utf-8')
-        print(line)
         line_string = line.split()
 
         print("El cliente nos manda " + line)
@@ -32,6 +31,8 @@ class EchoHandler(socketserver.DatagramRequestHandler):
 
 
 if __name__ == "__main__":
+
+
     try:
         serv = socketserver.UDPServer((sys.argv[1], int(sys.argv[2])),EchoHandler)
         fichero_audio = sys.argv[3]
